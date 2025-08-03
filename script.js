@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // This function adds task
-    function addTask() {
+    function addTask(taskText, save = true) {
         taskText = taskInput.value.trim();
         if (taskText === ""){
             alert("Please enter your task");
@@ -24,7 +24,18 @@ document.addEventListener("DOMContentLoaded", function () {
             taskList.appendChild(li)
             taskInput.value = "";
         }
+        if (save) {
+            const storedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            storedTasks.push(taskText);
+            localStorage.setItem('tasks', JSON.stringify(storedTasks));
+        }
     }
+
+    function loadTasks() {
+    const storedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    storedTasks.forEach(taskText => addTask(taskText, false)); // 'false' indicates not to save again to Local Storage
+}
+
     // The add task button call the add task function
     addButton.addEventListener("click", addTask);
     taskInput.addEventListener('keypress', function (event) {
@@ -33,4 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
     document.addEventListener("DOMContentLoaded", addTask);
+    document.addEventListener('DOMContentLoaded', () => {
+    loadTasks();
+    // Other initialization code
+});
 })
